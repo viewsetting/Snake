@@ -1,0 +1,276 @@
+#include<cstdio>
+#include<cstring>
+#include<cstdlib>
+#include<ctime>
+#include<conio.h>
+#include<windows.h>
+#include<iostream>
+#include<string>
+#include<sstream>
+#include"animation.h"
+#include"framework.h"
+using namespace std;
+
+const int dd[4][2]= {{1,0},{0,1},{-1,0},{0,-1}};
+char map[33][53];
+int d,fx,fy,score;
+int map_x=18;
+int map_y=5;
+int time_;
+animation ani;
+bool eat;
+struct body
+{
+    int x,y;
+    body *last,*next;
+    body()
+    {
+        last=next=NULL;
+    }
+}*head;
+int Rand(int l,int r)
+{
+    return rand()%(r-l+1)+l;
+}
+void show_map();
+void print_pro();
+void init()
+{
+    score=0;
+    clean_line(1,map_y+24,80);
+     caption(80,2,"Developed by viewsetting");
+     caption(85,3,"28th July 2017");
+    //print_pro();
+    for(int i=0; i<22; i++)
+        for(int j=0; j<52; j++)
+            map[i][j]=' ';
+    for(int i=0; i<52; i++)
+        map[0][i]=map[21][i]='#';
+    for(int i=0; i<22; i++)
+        map[i][0]=map[i][51]='#';
+        show_map();
+    srand((unsigned)time(NULL));
+    head=new body;
+    head->x=Rand(5,15),head->y=Rand(10,40);
+    d=Rand(0,3);
+    switch(d)
+    {
+    case 0:
+        map[head->x][head->y]='|';
+        map[head->x+1][head->y]='|';
+        break;
+    case 1:
+        map[head->x][head->y]='-';
+        map[head->x][head->y+1]='-';
+        break;
+    case 2:
+        map[head->x][head->y]='|';
+        map[head->x-1][head->y]='|';
+        break;
+    case 3:
+        map[head->x][head->y]='-';
+        map[head->x][head->y-1]='-';
+        break;
+    }
+    body *l=new body;
+    *l=*head;
+    l->x+=dd[d][0];
+    l->y+=dd[d][1];
+    head->last=l;
+    l->next=head;
+    d=(d+2)%4;
+    do
+    {
+        fx=Rand(1,20);
+        fy=Rand(1,50);
+    }
+    while(map[fx][fy]!=' ');
+    map[fx][fy]='*';
+    gotoxy(fy+map_x,fx+map_y);
+        cout<<'*';
+}
+void info()
+{
+    stringstream tem;
+    tem<<score;
+    string sco;
+    tem>>sco;
+    string info_="Your score:      points.";
+    caption(map_x,map_y+23,info_);
+}
+void show_map()
+{
+    for(int i=0; i<22; i++)
+    {
+        gotoxy(map_x,map_y+i);
+        puts(map[i]);
+    }
+    info();
+}
+int swish(string cho);
+void print()
+{
+    system("cls");
+
+    for(int i=0; i<22; i++)
+    {
+        gotoxy(18,7+i);
+        puts(map[i]);
+    }
+    gotoxy(map_x,map_y+23);
+    printf("Your score:%d\n",score);
+}
+void play();
+void print_pro()
+{
+    string a="           Game over!         \n\n";
+    string b="          Your score: ";
+    string c="\n\n            Try Again?";
+    stringstream tem;
+    tem<<score;
+    string sco;
+    tem>>sco;
+    string fuck=a+b+sco+c;
+    LPCSTR jun=fuck.c_str();
+    MessageBox(NULL,jun,"GG",NULL);
+    play();
+}
+void Update(body *u,int x,int y)
+{
+    if(map[x][y]=='#'||map[x][y]=='-'||map[x][y]=='|')
+    {
+        gotoxy(map_x+10,map_y+24);
+        cout<<"Game over!"<<endl;
+        print_pro();
+    }
+    if(u==NULL)return;
+    if(u->last!=NULL||eat==0)
+    {
+        map[u->x][u->y]=' ';
+       gotoxy(u->y+map_x,u->x+map_y);
+       cout<<' ';
+    }
+
+    else
+    {
+        u->last=new body;
+        u->last->next=u;
+        u->last->x=u->x;
+        u->last->y=u->y;
+        score++;
+       //gotoxy(x,y);
+       //cout<<map
+        do
+        {
+            fx=Rand(1,20);
+            fy=Rand(1,50);
+        }
+        while(map[fx][fy]!=' ');
+        map[fx][fy]='*';
+        //gotoxy(80,16);
+      //  cout<<"fx "<<fy<<"fy "<<fx;
+        gotoxy(fy+map_x,fx+map_y);
+        cout<<'*';
+    }
+    char c;
+    if(u->x==x)
+        c='-';
+    if(u->y==y)
+        c='|';
+    map[x][y]=c;
+    if(u->last&&(u->last->x!=u->x||u->last->y!=u->y))Update(u->last,u->x,u->y);
+    u->x=x;
+    u->y=y;
+    gotoxy(y+map_x,x+map_y);
+    cout<<c;
+    gotoxy(80,26);
+}
+void play()
+{
+    init();
+   // show_map();
+    while(1)
+    {
+        //print();
+        int x=d;
+        for(int i=0; i<=10; i++)
+        {
+            /*if(GetKeyState('S')<0&&d!=2)
+                x=0;
+            if(GetKeyState('D')<0&&d!=3)
+                x=1;
+            if(GetKeyState('W')<0&&d!=0)
+                x=2;
+            if(GetKeyState('A')<0&&d!=1)
+                x=3;*/
+            if( ::GetAsyncKeyState(VK_LEFT) & 0x8000&&d!=1 ) x=3;
+            if( ::GetAsyncKeyState(VK_RIGHT)& 0x8000 &&d!=3 ) x=1;
+            if( ::GetAsyncKeyState(VK_UP) & 0x8000 &&d!=0)   x=2;
+            if( ::GetAsyncKeyState(VK_DOWN) & 0x8000   &&d!=2 ) x=0;
+
+            Sleep(time_);     ///it is frequency!!!!!!!
+        }
+        d=x;
+        eat=(map[head->x+dd[d][0]][head->y+dd[d][1]]=='*');
+        gotoxy(map_x+13,map_y+23); cout<<score;
+        Update(head,head->x+dd[d][0],head->y+dd[d][1]);
+    }
+
+}
+
+void stus()
+{
+     system("cls");
+    //cin>>time_;
+    gotoxy(25,10);
+    msgboxer(27,14,"We have easy,normal,professional and GG level of difficulties for you to pick up one particular difficulty to play.     WARNING: type correct format!",30,7,40,1);
+    msgboxer(30,10,"SET DIFFICULTY YOU WANT",23,1,33,0);
+    //cout<<"Difficulty Setting(frequency by ms)\n";
+
+    gotoxy(40,11);
+    string inp;
+    cin>>inp;
+    //stus();
+    if(swish( inp))
+    {
+        time_=swish(inp); return;
+    }
+
+    else
+    {
+        MessageBoxA(NULL,"Choose right difficulty","ERROR",0);
+        //system("pause");
+        stus();
+    }
+}
+
+int main()
+{
+    //caption(30,30,"fuck junlao");
+    ani.change(30,10);
+    caption(49,9,"Snack  1.0.2");
+
+    caption(60,20,"Developed by viewsetting");
+    caption(50,14,"LOADING...");
+    caption(62,22,"ALL RIGHTS RESERVED");
+    ani.processbar_winxp(50,2,'-','|',3,"¡ö" );
+
+    stus();
+
+
+
+    gotoxy(18,5);
+    system("cls");
+
+    play();
+
+    return 0;
+}
+int swish(string cho)
+{
+    if(cho=="easy") return 25;
+    if(cho=="normal") return 12;
+    if(cho=="professional") return 5;
+    if(cho=="GG") return 1;
+    return 0;
+}
