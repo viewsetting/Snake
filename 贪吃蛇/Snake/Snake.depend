@@ -1,0 +1,53 @@
+# depslib dependency file v1.0
+1501307546 source:c:\users\lenovo\desktop\frame\Ã∞≥‘…ﬂ\animation.cpp
+	<iostream>
+	<cstdio>
+	<string>
+	<conio.h>
+	<windows.h>
+	"animation.h"
+	"framework.h"
+
+1501090039 c:\users\lenovo\desktop\frame\Ã∞≥‘…ﬂ\animation.h
+	"windows.h"
+	<iostream>
+	<string>
+
+1501092040 c:\users\lenovo\desktop\frame\Ã∞≥‘…ﬂ\framework.h
+	<string>
+
+1501092204 source:c:\users\lenovo\desktop\frame\Ã∞≥‘…ﬂ\framework.cpp
+	<iostream>
+	<string>
+	"framework.h"
+	<conio.h>
+	<windows.h>
+	"animation.h"
+	<cstdio>
+
+1501227990 source:c:\users\lenovo\desktop\frame\Ã∞≥‘…ﬂ\Ã∞≥‘…ﬂ.cpp
+	<cstdio>
+	<cstring>
+	<cstdlib>
+	<ctime>
+	<conio.h>
+	<windows.h>
+	<iostream>
+	<string>
+	<sstream>
+	"animation.h"
+	"framework.h"
+
+1501307488 source:c:\users\lenovo\desktop\frame\Ã∞≥‘…ﬂ\snake.cpp
+	<cstdio>
+	<cstring>
+	<cstdlib>
+	<ctime>
+	<conio.h>
+	<windows.h>
+	<iostream>
+	<string>
+	<sstream>
+	"animation.h"
+	"framework.h"
+
